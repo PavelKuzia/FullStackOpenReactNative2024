@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   links: {
     fontWeight: 'bold',
-    fontSize: 22
+    fontSize: 19
   }
 });
 
@@ -54,11 +54,26 @@ const AppBar = () => {
             <Text style={styles.links}>Sign In</Text>
         </Link>
         }
+        {!data?.me && 
+        <Link to='/signup'>
+            <Text style={styles.links}>Sign Up</Text>
+        </Link>
+        }
+        {data?.me && 
+        <Link to='/createReview'>
+          <Text style={styles.links}>Create a review</Text>
+        </Link>
+        }
+        {data?.me && 
+        <Link to='/myReviews'>
+          <Text style={styles.links}>My Reviews</Text>
+        </Link>
+        }
         {data?.me && 
         <Pressable onPress={signOut}>
           <Text style={styles.links}>Sign Out</Text>
         </Pressable>
-        }
+        }        
       </View>
     </ScrollView>   
   </View>

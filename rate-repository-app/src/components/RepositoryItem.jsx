@@ -1,5 +1,9 @@
 import { Text, View, Image, StyleSheet } from 'react-native';
-import theme from '../theme'
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { GET_REPOSITORY } from '../graphql/queries';
+import theme from '../theme';
+import RepositoryInfo from './RepositoryInfo';
 
 const styles = StyleSheet.create({
   container: {
@@ -49,13 +53,46 @@ const styles = StyleSheet.create({
   infoContainer: {
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  submitButton: {
+    backgroundColor: theme.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    marginLeft: 5,
+    marginRight: 5,
+    borderRadius: 8
+  },
+  submitText: {
+    color: theme.colors.white,
+    fontSize: theme.fontSizes.header
   }
 });
 
-const RepositoryItem = ({item}) => {
+const RepositoryItem = ({item, showSingleItem}) => {
   const format = (i) => {
     const number = i / 1000
     return number.toFixed(1) + 'k'
+  }
+
+  if (showSingleItem) {
+    const { repositoryID } = useParams();
+    
+    const id = {'id': String(repositoryID)};
+    const { data, loading } = useQuery(GET_REPOSITORY, {variables: id});
+
+    let item = data ? data.repository : undefined;
+
+    if (loading) {
+      return (
+        <View>
+          <Text>Loading</Text>
+        </View>
+      )
+    }
+    return (
+      <RepositoryInfo item={item} />
+    )
   }
 
   return (
