@@ -1,0 +1,1 @@
+This Project is Front-End written for mobile applications in React Native. In order to use Back-End please refer to the following link: https://github.com/fullstack-hy2020/rate-repository-api/blob/master/README.md
