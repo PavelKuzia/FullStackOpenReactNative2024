@@ -131,6 +131,47 @@ export const GET_REVIEWS = gql`
   }
 `;
 
+export const GET_REVIEWS_PAGINATION = gql`
+  query Repository($repositoryId: ID!, $after: String, $first: Int) {
+    repository(id: $repositoryId) {
+      id
+      fullName
+      id
+      fullName
+      url
+      ownerAvatarUrl
+      description
+      language
+      stargazersCount
+      forksCount
+      reviewCount
+      ratingAverage
+      reviews(first: $first, after: $after) {
+        totalCount
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            repositoryId
+            user {
+              id
+              username
+            }
+          }
+          cursor
+        }
+        pageInfo {
+          endCursor
+          startCursor
+          hasNextPage
+        }
+      }
+    }
+  }
+`;
+
 export const GET_REPOSITORY_WITH_REVIEWS = gql`
 query repository($id: ID!) {
   repository(id: $id) {

@@ -1,8 +1,7 @@
 import RepositoryInfo from "./RepositoryInfo";
 import ReviewItem from "./ReviewItem";
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { GET_REPOSITORY_WITH_REVIEWS } from '../graphql/queries';
+import useReviews from '../hooks/useReviews';
 import { Text, View, FlatList, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -15,11 +14,17 @@ const ItemSeparator = () => <View style={styles.separator} />;
 
 const SingleRepository = () => {
   const { repositoryID } = useParams();
-  
-  const id = {'id': String(repositoryID)};
-  const { data, loading } = useQuery(GET_REPOSITORY_WITH_REVIEWS, {variables: id, fetchPolicy: 'cache-and-network'});
 
-  const repository = data ? data.repository : undefined;
+  const { repository, fetchMore, loading } = useReviews({
+    repositoryId: String(repositoryID),
+    first: 2,
+    after: ""
+  })
+
+  const onEndReach = () => {
+    fetchMore();
+  };
+
   const reviews = repository ? repository.reviews.edges.map((edge) => edge.node) : [];
 
   if (loading) {
@@ -37,6 +42,8 @@ const SingleRepository = () => {
       keyExtractor={({ id }) => id}
       ListHeaderComponent={() => <RepositoryInfo item={repository} />}
       ItemSeparatorComponent={ItemSeparator}
+      onEndReach={onEndReach}
+      onEndReachedThreshold={0.5}
     />
   );
 };
